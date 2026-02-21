@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart Support - Milestone 1</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Smart Support - Milestone 1 Dashboard</h1>
+
+  <div class="card">
+    <h2>Submit Ticket</h2>
+    <textarea id="ticketText" placeholder="Enter your support ticket..."></textarea>
+    <button onclick="submitTicket()">Submit Ticket</button>
+  </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <h3>Queue Size</h3>
+      <span id="queueSize">0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Latest Ticket Result</h2>
+    <div id="result"></div>
+  </div>
+
+  <div class="card">
+    <h2>Current Queue</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Category</th>
+          <th>Urgent</th>
+        </tr>
+      </thead>
+      <tbody id="queueTable"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
