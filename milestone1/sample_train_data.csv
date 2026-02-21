@@ -1,0 +1,10 @@
+text,category
+I need a refund for my subscription,Billing
+My invoice is incorrect,Billing
+Payment failed but money deducted,Billing
+The dashboard is not loading,Technical
+API returns 500 error,Technical
+Integration with Slack is broken,Technical
+We need a new contract agreement,Legal
+Please review the NDA,Legal
+There is a compliance issue,Legal
