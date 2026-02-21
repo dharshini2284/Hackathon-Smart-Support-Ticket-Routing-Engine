@@ -2,12 +2,17 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import uuid
 import time
-
+from fastapi.middleware.cors import CORSMiddleware
 from model import classify_ticket, detect_urgency
 from queue_manager import push_ticket, pop_ticket, get_queue_state, get_all_tickets
 
 app = FastAPI(title="Smart Support MVR")
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Ticket(BaseModel):
     text: str
