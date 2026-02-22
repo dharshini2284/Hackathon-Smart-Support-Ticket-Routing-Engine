@@ -24,6 +24,7 @@ from fastapi.middleware.cors import CORSMiddleware
 origins = [
     "http://localhost:5173",  # your frontend URL
     "http://127.0.0.1:5173",
+    "https://smart-support-ticket-routing-engine-frontend-l9nnx9v4r.vercel.app"
     # you can add more origins if needed
 ]
 
