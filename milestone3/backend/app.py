@@ -30,7 +30,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],  # GET, POST, etc.
     allow_headers=["*"],  # Authorization, Content-Type, etc.
@@ -133,7 +133,7 @@ fake = Faker()
 
 @app.post("/simulate")
 async def simulate_tickets(
-    num_tickets: int = 100,
+    num_tickets: int = 10,
     duplicate_ratio: float = 0.1
 ):
     for i in range(num_tickets):
@@ -148,7 +148,7 @@ async def simulate_tickets(
                 "ticket_id": f"SIM-{i}",
                 "text": fake.text(max_nb_chars=100)
             }
-
+        await asyncio.sleep(0.05)
         await broker.publish(ticket)
 
     return {
