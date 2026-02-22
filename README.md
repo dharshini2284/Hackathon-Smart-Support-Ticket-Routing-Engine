@@ -143,11 +143,11 @@ Then:
 * Create a single **Master Incident**
 * Aggregate related tickets
 
+![Ticket Overview](TicketOverview.jpeg)
 ---
 
 ### 🔥 Flash Flood Detection (Deployed Version)
 
-![Flash Flood Master Incident](attachment:2a7b95cc-cfa7-4888-93b5-ebf4c6345e01.png)
 
 The system automatically detects high similarity floods and groups them under a Master Incident.
 
@@ -171,7 +171,7 @@ This ensures availability over accuracy when under stress.
 
 ### ⚡ Circuit Breaker Active
 
-![Circuit Breaker Open](attachment:3554feb8-86b1-4e92-ada6-b0d7b546f96a.png)
+![Circuit Breaker Open](CircuitBreaker.jpeg)
 
 System remains operational even when ML layer degrades.
 
