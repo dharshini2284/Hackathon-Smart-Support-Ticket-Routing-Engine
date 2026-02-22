@@ -115,3 +115,8 @@ class AgentRegistry:
             )
 
         return score
+
+    def release_agent(self, agent_id: str):
+        agent = self.agents.get(agent_id)
+        if agent and agent.current_load > 0:
+            agent.current_load -= 1

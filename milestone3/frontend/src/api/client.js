@@ -1,8 +1,7 @@
 import axios from "axios";
 
 /**
- * Base API configuration
- * Change this in production using environment variables
+ * Base API URL
  */
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
@@ -19,7 +18,7 @@ const apiClient = axios.create({
 });
 
 /**
- * Optional: Response interceptor for global error handling
+ * Global error handler
  */
 apiClient.interceptors.response.use(
   (response) => response,
@@ -34,11 +33,10 @@ apiClient.interceptors.response.use(
 ============================ */
 
 /**
- * Get all incidents
+ * Get current active incident
  */
 export const fetchIncidents = async () => {
   const response = await apiClient.get("/incidents");
-  console.log(response.data);
   return response.data;
 };
 
@@ -51,10 +49,18 @@ export const fetchMetrics = async () => {
 };
 
 /**
- * Analyze a new ticket
+ * Get processed tickets
+ */
+export const fetchTickets = async () => {
+  const response = await apiClient.get("/tickets");
+  return response.data;
+};
+
+/**
+ * Submit ticket
  */
 export const analyzeTicket = async (payload) => {
-  const response = await apiClient.post("/analyze", payload);
+  const response = await apiClient.post("/tickets", payload);
   return response.data;
 };
 
@@ -63,6 +69,16 @@ export const analyzeTicket = async (payload) => {
  */
 export const checkHealth = async () => {
   const response = await apiClient.get("/health");
+  return response.data;
+};
+
+export const runSimulation = async (
+  num_tickets = 200,
+  duplicate_ratio = 0.3
+) => {
+  const response = await apiClient.post(
+    `/simulate?num_tickets=${num_tickets}&duplicate_ratio=${duplicate_ratio}`
+  );
   return response.data;
 };
 

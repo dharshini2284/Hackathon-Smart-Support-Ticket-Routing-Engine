@@ -1,17 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import AgentBoard from "./AgentBoard";
 import IncidentPanel from "./IncidentPanel";
 import FlashFloodPanel from "./FlashFloodPanel";
 import CircuitBreakerCard from "./CircuitBreakerCard";
 import TicketTable from "./TicketTable";
+import { runSimulation } from "../api/client";
 
-const DashboardLayout = ({ incidents, metrics, loading }) => {
+const DashboardLayout = ({
+  incidents = [],
+  metrics = {},
+  tickets = [],
+  loading = false,
+}) => {
+  const [simulating, setSimulating] = useState(false);
+
+  const handleSimulation = async () => {
+    try {
+      setSimulating(true);
+      await runSimulation(300, 0.4); // 300 tickets, 40% duplicates
+    } catch (error) {
+      console.error("Simulation failed:", error);
+    } finally {
+      setSimulating(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white">
-      
+
       {/* HEADER */}
       <header className="border-b border-gray-800 px-8 py-5 flex justify-between items-center backdrop-blur-md bg-gray-900/60 sticky top-0 z-50">
-        <div>
+
+        {/* LEFT: Simulation Button */}
+        <button
+          disabled={simulating}
+          onClick={handleSimulation}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition ${simulating
+              ? "bg-gray-600 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-700"
+            }`}
+        >
+          {simulating ? "Simulating..." : "Run Simulation"}
+        </button>
+
+        {/* CENTER: Title */}
+        <div className="text-center">
           <h1 className="text-3xl font-bold tracking-tight">
             AI Incident Management
           </h1>
@@ -20,6 +53,7 @@ const DashboardLayout = ({ incidents, metrics, loading }) => {
           </p>
         </div>
 
+        {/* RIGHT: Status Badge */}
         <div className="flex items-center gap-4">
           <div className="px-4 py-1 rounded-full bg-green-600/20 text-green-400 text-sm font-medium border border-green-500/30">
             System Operational
@@ -51,12 +85,12 @@ const DashboardLayout = ({ incidents, metrics, loading }) => {
           <IncidentPanel incidents={incidents} />
         </section>
 
-        {/* TICKET TABLE */}
+        {/* TICKETS SECTION */}
         <section>
           <h2 className="text-2xl font-semibold mb-4">
             Ticket Overview
           </h2>
-          <TicketTable incidents={incidents} />
+          <TicketTable tickets={tickets} />
         </section>
 
       </main>

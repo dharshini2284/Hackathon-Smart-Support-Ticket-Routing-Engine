@@ -3,9 +3,16 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Dict
 
-from .queue.redis_client import RedisBroker
-from .worker.orchestrator_worker import handle_ticket
-from .orchestration.incident_manager import IncidentManager
+from ticket_queue.redis_client import RedisBroker
+from worker.orchestrator_worker import handle_ticket
+from worker.orchestrator_worker import incident_manager
+from storage.redis_storage import get_all_tickets
+from worker.orchestrator_worker import registry
+from ml.circuit_breaker import circuit_breaker
+from worker.orchestrator_worker import deduplicator
+from orchestration.deduplication import get_flood_metrics
+from faker import Faker
+import random
 
 # --------------------------------------------
 # FastAPI App
@@ -27,12 +34,11 @@ app.add_middleware(
     allow_methods=["*"],  # GET, POST, etc.
     allow_headers=["*"],  # Authorization, Content-Type, etc.
 )
-# --------------------------------------------
 # Broker + Incident Manager
 # --------------------------------------------
 
 broker = RedisBroker()
-incident_manager = IncidentManager()
+# incident_manager is imported from worker.orchestrator_worker
 
 # --------------------------------------------
 # Request Model
@@ -89,8 +95,61 @@ async def get_incident_status() -> Dict:
 
 @app.get("/metrics")
 async def metrics():
-    # example metrics
+    agents_data = []
+
+    for agent in registry.agents.values():
+        load_ratio = agent.current_load / agent.max_capacity
+
+        if load_ratio < 0.5:
+            status = "healthy"
+        elif load_ratio < 1:
+            status = "degraded"
+        else:
+            status = "down"
+
+        agents_data.append({
+            "name": agent.agent_id,
+            "status": status,
+            "latency": round(load_ratio * 500)  # simulated metric
+        })
+
     return {
         "tickets_processed": broker.processed_count,
-        "active_workers": 1
+        "active_workers": 1,
+        "agents": agents_data,
+        "circuit_breaker": circuit_breaker.get_status(),
+        "flash_flood": get_flood_metrics(deduplicator),
+    }
+
+@app.get("/tickets")
+async def get_tickets():
+    return get_all_tickets()
+
+from faker import Faker
+import random
+
+fake = Faker()
+
+@app.post("/simulate")
+async def simulate_tickets(
+    num_tickets: int = 100,
+    duplicate_ratio: float = 0.1
+):
+    for i in range(num_tickets):
+
+        if random.random() < duplicate_ratio:
+            ticket = {
+                "ticket_id": f"SIM-DUP-{i}",
+                "text": "Server outage in region X ASAP"
+            }
+        else:
+            ticket = {
+                "ticket_id": f"SIM-{i}",
+                "text": fake.text(max_nb_chars=100)
+            }
+
+        await broker.publish(ticket)
+
+    return {
+        "message": f"{num_tickets} tickets submitted for simulation"
     }

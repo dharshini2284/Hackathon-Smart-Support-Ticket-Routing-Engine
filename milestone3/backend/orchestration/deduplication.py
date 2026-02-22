@@ -2,15 +2,15 @@ import time
 from typing import List, Dict
 import numpy as np
 
-from ..ml.embeddings import get_embedding
+from ml.embeddings import get_embedding
 
 # --------------------------------------------
 # Configuration
 # --------------------------------------------
 
-SIMILARITY_THRESHOLD = 0.85
-TIME_WINDOW_SECONDS = 120
-FLOOD_THRESHOLD = 5
+SIMILARITY_THRESHOLD = 0.9
+TIME_WINDOW_SECONDS = 300
+FLOOD_THRESHOLD = 10
 
 
 # --------------------------------------------
@@ -95,4 +95,32 @@ class Deduplicator:
             "is_duplicate": is_duplicate,
             "duplicate_count": duplicate_count,
             "incident": incident_flag
+        }
+
+def get_flood_metrics(deduplicator: Deduplicator) -> Dict:
+    current_rate = len(deduplicator.recent_tickets)
+    threshold = 10
+    window_seconds = 300
+
+    status = "surge" if current_rate >= threshold else "normal"
+
+    return {
+        "current_rate": current_rate,
+        "threshold": threshold,
+        "status": status,
+        "window_seconds": window_seconds
+    }
+
+    def get_flood_metrics(deduplicator):
+        current_rate = len(deduplicator.recent_tickets)
+        threshold = 10
+        window_seconds = 300
+
+        status = "surge" if current_rate >= threshold else "normal"
+
+        return {
+            "current_rate": current_rate,
+            "threshold": threshold,
+            "status": status,
+            "window_seconds": window_seconds
         }

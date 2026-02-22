@@ -1,6 +1,6 @@
 from typing import Dict, Optional
 
-from .agent_registry import AgentRegistry, Agent
+from orchestration.agent_registry import AgentRegistry, Agent
 
 
 # --------------------------------------------
