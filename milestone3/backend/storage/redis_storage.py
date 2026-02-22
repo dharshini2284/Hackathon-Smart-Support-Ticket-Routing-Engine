@@ -1,16 +1,10 @@
-import json
 import redis
+import json
+from config import settings
 
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
+redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
 
 TICKET_LIST_KEY = "processed_tickets"
-
-redis_client = redis.Redis(
-    host=REDIS_HOST,
-    port=REDIS_PORT,
-    decode_responses=True
-)
 
 
 def store_ticket(ticket: dict):

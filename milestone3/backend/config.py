@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
-
+import os
 
 class Settings(BaseSettings):
 
@@ -15,8 +15,7 @@ class Settings(BaseSettings):
     # Redis
     # --------------------------------------------
 
-    REDIS_HOST: str = "localhost"
-    REDIS_PORT: int = 6379
+    REDIS_URL: str = os.getenv("REDIS_URL")
     REDIS_QUEUE: str = "ticket_queue"
 
     # --------------------------------------------

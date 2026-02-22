@@ -2,23 +2,19 @@ import asyncio
 import json
 from typing import Any, Callable, Optional
 
-import redis.asyncio as redis  # <- this is crucial
+import redis.asyncio as redis
+from config import settings
 
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
-QUEUE_NAME = "ticket_queue"
 class RedisBroker:
 
     def __init__(
         self,
-        host: str = REDIS_HOST,
-        port: int = REDIS_PORT,
-        queue_name: str = QUEUE_NAME
+        redis_url: str = settings.REDIS_URL,
+        queue_name: str = settings.REDIS_QUEUE
     ):
         self.queue_name = queue_name
-        self.redis: Optional[redis.Redis] = redis.Redis(
-            host=host,
-            port=port,
+        self.redis: Optional[redis.Redis] = redis.from_url(
+            redis_url, 
             decode_responses=True
         )
         # <-- Add processed counter
